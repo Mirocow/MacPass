@@ -285,7 +285,7 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
     self.unlockCount += 1;
     [[NSNotificationCenter defaultCenter] postNotificationName:MPDocumentDidUnlockDatabaseNotification object:self];
     /* Make sure to only store */
-    MPAppDelegate *delegate = [NSApp delegate];
+    MPAppDelegate *delegate = (MPAppDelegate *)[NSApp delegate];
     if(self.compositeKey.hasKeyFile && self.compositeKey.hasPassword && delegate.isAllowedToStoreKeyFile) {
       [self _storeKeyURL:keyFileURL];
     }
@@ -315,7 +315,7 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
 }
 
 - (NSURL *)suggestedKeyURL {
-  MPAppDelegate *delegate = [NSApp delegate];
+  MPAppDelegate *delegate = (MPAppDelegate *)[NSApp delegate];
   if(!delegate.isAllowedToStoreKeyFile) {
     return nil;
   }
@@ -657,7 +657,7 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
   if(nil == keyURL) {
     return; // no URL to store in the first place
   }
-  MPAppDelegate *delegate = [NSApp delegate];
+  MPAppDelegate *delegate = (MPAppDelegate *)[NSApp delegate];
   NSAssert(delegate.isAllowedToStoreKeyFile, @"We can only store if we are allowed to do so!");
   NSMutableDictionary *keysForFiles = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kMPSettingsKeyRememeberdKeysForDatabases] mutableCopy];
   if(nil == keysForFiles) {
