@@ -32,6 +32,7 @@
 #import "MPConstants.h"
 #import "MPSavePanelAccessoryViewController.h"
 #import "MPTreeDelegate.h"
+#import "MPTargetItemResolving.h"
 
 
 #import "DDXMLNode.h"
@@ -532,6 +533,9 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
 }
 
 - (void)deleteGroup:(KPKGroup *)group {
+  if(!group) {
+    return; // Nothing to do;
+  }
   if(self.useTrash) {
     if(!self.trash) {
       [self _createTrashGroup];
@@ -611,6 +615,11 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
 }
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem {
+  id target = [NSApp targetForAction:@selector(targetItemForAction)];
+  KPKNode *targetNode = [target targetItemForAction];
+  KPKEntry *targetEntry = [targetNode asEntry];
+  KPKGroup *targetGroup = [targetNode asGroup];
+
   if(self.encrypted || self.isReadOnly) { return NO; }
   
   BOOL valid = self.selectedItem ? self.selectedItem.isEditable : YES;
@@ -647,6 +656,18 @@ NSString *const MPDocumentGroupKey                        = @"MPDocumentGroupKey
       break;
     case MPActionShowHistory:
       valid &= (self.selectedEntry && (self.selectedItem == (id)self.selectedEntry));
+      break;
+    /* Entry View Actions */
+    case MPActionCopyUsername:
+      valid &= (nil != targetEntry) && ([targetEntry.username length] > 0);
+      break;
+    case MPActionCopyPassword:
+      valid &= (nil != targetEntry ) && ([targetEntry.password length] > 0);
+      break;
+    case MPActionCopyURL:
+    case MPActionOpenURL:
+      valid &= (nil != targetEntry ) && ([targetEntry.url length] > 0);
+      break;
     default:
       break;
   }

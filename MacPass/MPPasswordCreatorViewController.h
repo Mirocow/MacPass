@@ -7,11 +7,14 @@
 //
 
 #import "MPViewController.h"
+@class KPKEntry;
 
 @interface MPPasswordCreatorViewController : MPViewController <NSTextFieldDelegate>
 
 @property (copy, readonly) NSString *generatedPassword;
 @property (weak) id closeTarget;
+@property (nonatomic, weak) KPKEntry *entry;
+@property (assign) BOOL allowsEntryDefaults;
 
 /**
  *  Should be called to reset the generator
